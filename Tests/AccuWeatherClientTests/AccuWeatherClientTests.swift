@@ -2,7 +2,7 @@ import XCTest
 import Combine
 @testable import WeatherClient
 
-final class WeatherClientTests: XCTestCase {
+final class AccuWeatherClientTests: XCTestCase {
     
     let key = "pYn2mKdUEy0qnl1MmxFn6irm9OqPaQxI"
     let client = WeatherClient()
@@ -57,6 +57,36 @@ final class WeatherClientTests: XCTestCase {
     }
     
     @available(iOS 13, *)
+    func testCityLookupPublisher() {
+        var city: City?
+        var error: Error?
+        var cancellables = Set<AnyCancellable>()
+        
+        let expectation = self.expectation(description: "city-lookup-publisher")
+        
+        client.authenticate(with: key)
+        client.cityLookup(name: "denizli")
+            .sink { (completion) in
+                switch completion {
+                case let .failure(e):
+                    error = e
+                case .finished:
+                    break
+                }
+                expectation.fulfill()
+            } receiveValue: { (cities) in
+                city = cities.first
+            }
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 5)
+        XCTAssertNotNil(city)
+        XCTAssertNil(error)
+        XCTAssertEqual(city!.key, "317679")
+
+    }
+    
+    @available(iOS 13, *)
     func testCityCurrentWeatherPublisher() {
         var entry: WeatherEntry?
         var error: Error?
@@ -85,6 +115,6 @@ final class WeatherClientTests: XCTestCase {
 
     static var allTests = [
         ("testCityLookup", testCityLookup),
-        ("testCityCurrentWeather", testCityCurrentWeather)
+        ("testCityCurrentWeather", testCityCurrentWeather),
     ]
 }
