@@ -1,3 +1,3 @@
-# WeatherClient
+# AccruWeather iOS Client
 
-A description of this package.
+AccruWeather API client for iOS written in Swift 5.
