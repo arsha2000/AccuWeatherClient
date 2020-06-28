@@ -12,6 +12,7 @@ enum WeatherEndpoint: Endpoint {
     
     case cityLookup(apiKey: String, name: String)
     case cityCurrentWeather(apiKey: String, cityKey: String)
+    case cityDailyForecast(apiKey: String, cityKey: String, frequency: DailyFrequency)
     
     private var baseURL: URL {
         guard let url = URL(string: "http://dataservice.accuweather.com") else {
@@ -28,18 +29,28 @@ enum WeatherEndpoint: Endpoint {
             return baseURL.appendingPathComponent("locations/v1/cities/search")
         case let .cityCurrentWeather(_, cityKey):
             return baseURL.appendingPathComponent("currentconditions/v1/\(cityKey)")
+        case let .cityDailyForecast(_, cityKey, frequency):
+            var url = baseURL.appendingPathComponent("forecasts/v1/daily")
+            switch frequency {
+            case .oneDay: url.appendPathComponent("1day")
+            case .fiveDays: url.appendPathComponent("5day")
+            case .tenDays: url.appendPathComponent("10day")
+            case .fifteenDays: url.appendPathComponent("15day")
+            }
+            return url.appendingPathComponent(cityKey)
         }
     }
     
     var method: HTTPMethod {
         switch self {
-        case .cityLookup, .cityCurrentWeather: return .get
+        case .cityLookup, .cityCurrentWeather, .cityDailyForecast: return .get
         }
     }
     
     var headers: HTTPHeaders {
         switch self {
-        case .cityLookup, .cityCurrentWeather: return [
+        case .cityLookup, .cityCurrentWeather, .cityDailyForecast:
+            return [
             .accept("application/json")
         ]
         }
@@ -53,6 +64,10 @@ enum WeatherEndpoint: Endpoint {
                 "q": name
             ]
         case let .cityCurrentWeather(apiKey, _):
+            return [
+                "apikey": apiKey
+            ]
+        case let .cityDailyForecast(apiKey, _, _):
             return [
                 "apikey": apiKey
             ]

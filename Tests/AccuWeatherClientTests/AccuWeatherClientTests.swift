@@ -121,6 +121,27 @@ final class AccuWeatherClientTests: XCTestCase {
         }))
     }
     
+    func testCityDailyForecast() {
+        var forecastResponse: DailyForecastResponse?
+        var error: Error?
+        
+        let expectation = self.expectation(description: "city-daily-forecast")
+        
+        client.authenticate(with: key)
+        client.cityDailyForecast(cityKey: "328328", frequency: .fiveDays) { (result) in
+            switch result {
+            case let .failure(e): error = e
+            case let .success(response): forecastResponse = response
+            }
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation], timeout: 5)
+        XCTAssertNotNil(forecastResponse)
+        XCTAssertFalse(forecastResponse?.dailyForecasts.isEmpty ?? true)
+        XCTAssertNil(error)
+    }
+    
     @available(iOS 13, *)
     func testCityLookupPublisher() {
         var city: City?
@@ -177,9 +198,50 @@ final class AccuWeatherClientTests: XCTestCase {
         XCTAssertNotNil(entry)
         XCTAssertNil(error)
     }
+    
+    @available(iOS 13, *)
+    func testCityDailyForecasrPublisher() {
+        var forecastResponse: DailyForecastResponse?
+        var error: Error?
+        var cancellables = Set<AnyCancellable>()
+        
+        let expectation = self.expectation(description: "city-daily-forecase-publisher")
+        
+        client.authenticate(with: key)
+        client.cityDailyForecast(cityKey: "328328", frequency: .fiveDays)
+            .sink { (completion) in
+                switch completion {
+                case let .failure(e): error = e
+                case .finished: break
+                }
+                expectation.fulfill()
+            } receiveValue: { (response) in
+                forecastResponse = response
+            }
+            .store(in: &cancellables)
+        
+        wait(for: [expectation], timeout: 5)
+        XCTAssertNotNil(forecastResponse)
+        XCTAssertFalse(forecastResponse?.dailyForecasts.isEmpty ?? true)
+        XCTAssertNil(error)
+    }
 
-    static var allTests = [
-        ("testCityLookup", testCityLookup),
-        ("testCityCurrentWeather", testCityCurrentWeather),
-    ]
+    static var allTests: [(String, (AccuWeatherClientTests) -> () -> ())] {
+        var tests = [
+            ("testCityLookup", testCityLookup),
+            ("testCityCurrentWeather", testCityCurrentWeather),
+            ("testCityDailyForecast", testCityDailyForecast),
+            ("testAuthentication", testAuthentication)
+        ]
+        
+        if #available(iOS 13, *) {
+            tests.append(contentsOf: [
+                ("testCityLookupPublisher", testCityLookupPublisher),
+                ("testCityCurrentWeatherPublisher", testCityCurrentWeatherPublisher),
+                ("testCityDailyForecasrPublisher", testCityDailyForecasrPublisher)
+            ])
+        }
+        
+        return tests
+    }
 }
