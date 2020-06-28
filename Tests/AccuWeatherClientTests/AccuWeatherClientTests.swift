@@ -56,6 +56,71 @@ final class AccuWeatherClientTests: XCTestCase {
         XCTAssertNil(error)
     }
     
+    public func testAuthentication() {
+        var errors = [Error]()
+        var expectations = [XCTestExpectation]()
+       
+        
+        // purposefully not authenticating
+        
+        if #available(iOS 13, *) {
+            
+            var cancellables = Set<AnyCancellable>()
+            
+            let e1 = expectation(description: "city-current-weather-publisher-authentication")
+            expectations.append(e1)
+            client.cityCurrentWeather(cityKey: "328328")
+                .sink { (completion) in
+                    if case let .failure(error) = completion {
+                        errors.append(error)
+                    }
+                    e1.fulfill()
+                } receiveValue: { (_) in
+                }
+                .store(in: &cancellables)
+            
+            let e2 = expectation(description: "city-lookup-publisher-authentication")
+            expectations.append(e2)
+            client.cityLookup(name: "London")
+                .sink { (completion) in
+                    if case let .failure(error) = completion {
+                        errors.append(error)
+                    }
+                    e2.fulfill()
+                } receiveValue: { (_) in
+                }
+                .store(in: &cancellables)
+        }
+        
+        let e3 = expectation(description: "city-current-authentication")
+        expectations.append(e3)
+        client.cityCurrentWeather(cityKey: "328328") { (result) in
+            if case let .failure(error) = result {
+                errors.append(error)
+            }
+            e3.fulfill()
+        }
+        
+        let e4 = expectation(description: "city-lookup-authentication")
+        expectations.append(e4)
+        client.cityLookup(name: "London") { (result) in
+            if case let .failure(error) = result {
+                errors.append(error)
+            }
+            e4.fulfill()
+        }
+        
+        
+        wait(for: expectations, timeout: 5)
+        XCTAssertEqual(expectations.count, errors.count)
+        XCTAssertTrue(errors.allSatisfy({ (error) -> Bool in
+            if let weatherError = error as? WeatherAPIError {
+                return weatherError == .notAuthenticated
+            }
+            return false
+        }))
+    }
+    
     @available(iOS 13, *)
     func testCityLookupPublisher() {
         var city: City?
