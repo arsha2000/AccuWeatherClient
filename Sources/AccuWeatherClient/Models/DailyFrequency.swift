@@ -7,6 +7,6 @@
 
 import Foundation
 
-enum DailyFrequency {
+public enum DailyFrequency {
     case oneDay, fiveDays, tenDays, fifteenDays
 }

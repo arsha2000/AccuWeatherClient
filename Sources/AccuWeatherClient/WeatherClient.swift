@@ -2,7 +2,7 @@ import Alamofire
 import Foundation
 import Combine
 
-final class WeatherClient {
+public final class WeatherClient {
     
     private var apiKey: String?
     

@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum WeatherAPIError: Error {
+public enum WeatherAPIError: Error {
     case invalidURL, notAuthenticated, invalidResponse
     
     var localizedDescription: String {
