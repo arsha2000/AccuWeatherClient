@@ -6,6 +6,8 @@ public final class WeatherClient {
     
     private var apiKey: String?
     
+    public init() {}
+    
     public func authenticate(with key: String) {
         self.apiKey = key
     }
