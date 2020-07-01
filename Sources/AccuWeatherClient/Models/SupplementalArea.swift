@@ -8,10 +8,9 @@
 import Foundation
 
 // MARK: - SupplementalAdminArea
-public struct SupplementalAdminArea: Codable, Hashable {
+public struct SupplementalAdminArea: Codable {
     public let level: Int?
-    public let localizedName: String
-    public let englishName: String
+    public let localizedName, englishName: String
 
     enum CodingKeys: String, CodingKey {
         case level = "Level"

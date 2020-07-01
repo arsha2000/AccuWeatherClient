@@ -8,10 +8,9 @@
 import Foundation
 
 // MARK: - TimeZone
-public struct TimeZone: Codable, Hashable {
-    public let code: String
-    public let name: String
-    public let gmtOffset: Int
+public struct TimeZone: Codable {
+    public let code, name: String
+    public let gmtOffset: Double
     public let isDaylightSaving: Bool
     public let nextOffsetChange: Date?
 
@@ -23,7 +22,7 @@ public struct TimeZone: Codable, Hashable {
         case nextOffsetChange = "NextOffsetChange"
     }
 
-    public init(code: String, name: String, gmtOffset: Int, isDaylightSaving: Bool, nextOffsetChange: Date) {
+    public init(code: String, name: String, gmtOffset: Double, isDaylightSaving: Bool, nextOffsetChange: Date?) {
         self.code = code
         self.name = name
         self.gmtOffset = gmtOffset

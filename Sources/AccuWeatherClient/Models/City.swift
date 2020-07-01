@@ -19,25 +19,22 @@
 import Foundation
 
 
-
-
 // MARK: - City
-public struct City: Codable, Hashable {
+public struct City: Codable {
     public let version: Int
     public let key: String
     public let type: String
     public let rank: Int
-    public let localizedName: String
-    public let englishName: String
+    public let localizedName, englishName: String
     public let primaryPostalCode: String
-    public let region: Country
-    public let country: Country
+    public let region, country: Country
     public let administrativeArea: AdministrativeArea
     public let timeZone: TimeZone
     public let geoPosition: GeoPosition
     public let isAlias: Bool
     public let supplementalAdminAreas: [SupplementalAdminArea]
-    public let dataSets: [String]
+    public let dataSets: [DataSetElement]
+    public let details: Details?
 
     enum CodingKeys: String, CodingKey {
         case version = "Version"
@@ -55,9 +52,10 @@ public struct City: Codable, Hashable {
         case isAlias = "IsAlias"
         case supplementalAdminAreas = "SupplementalAdminAreas"
         case dataSets = "DataSets"
+        case details = "Details"
     }
 
-    public init(version: Int, key: String, type: String, rank: Int, localizedName: String, englishName: String, primaryPostalCode: String, region: Country, country: Country, administrativeArea: AdministrativeArea, timeZone: TimeZone, geoPosition: GeoPosition, isAlias: Bool, supplementalAdminAreas: [SupplementalAdminArea], dataSets: [String]) {
+    public init(version: Int, key: String, type: String, rank: Int, localizedName: String, englishName: String, primaryPostalCode: String, region: Country, country: Country, administrativeArea: AdministrativeArea, timeZone: TimeZone, geoPosition: GeoPosition, isAlias: Bool, supplementalAdminAreas: [SupplementalAdminArea], dataSets: [DataSetElement], details: Details?) {
         self.version = version
         self.key = key
         self.type = type
@@ -73,62 +71,78 @@ public struct City: Codable, Hashable {
         self.isAlias = isAlias
         self.supplementalAdminAreas = supplementalAdminAreas
         self.dataSets = dataSets
+        self.details = details
     }
 }
 
-//
-// Hashable or Equatable:
-// The compiler will not be able to synthesize the implementation of Hashable or Equatable
-// for types that require the use of JSONAny, nor will the implementation of Hashable be
-// synthesized for types that have collections (such as arrays or dictionaries).
+// MARK: - Details
+public struct Details: Codable {
+    public let key, stationCode: String
+    public let stationGmtOffset: Int
+    public let bandMap, climo, localRadar: String
+    public let mediaRegion: String?
+    public let metar, nxMetro, nxState: String
+    public let population: Int?
+    public let primaryWarningCountyCode, primaryWarningZoneCode, satellite, synoptic: String
+    public let marineStation: String
+    public let marineStationGmtOffset: Int?
+    public let videoCode, locationStem: String
+    public let dma: DMA?
+    public let partnerId: String?
+    public let sources: [SourceElement]
+    public let canonicalPostalCode, canonicalLocationKey: String
 
+    enum CodingKeys: String, CodingKey {
+        case key = "Key"
+        case stationCode = "StationCode"
+        case stationGmtOffset = "StationGmtOffset"
+        case bandMap = "BandMap"
+        case climo = "Climo"
+        case localRadar = "LocalRadar"
+        case mediaRegion = "MediaRegion"
+        case metar = "Metar"
+        case nxMetro = "NXMetro"
+        case nxState = "NXState"
+        case population = "Population"
+        case primaryWarningCountyCode = "PrimaryWarningCountyCode"
+        case primaryWarningZoneCode = "PrimaryWarningZoneCode"
+        case satellite = "Satellite"
+        case synoptic = "Synoptic"
+        case marineStation = "MarineStation"
+        case marineStationGmtOffset = "MarineStationGMTOffset"
+        case videoCode = "VideoCode"
+        case locationStem = "LocationStem"
+        case dma = "DMA"
+        case partnerId = "PartnerID"
+        case sources = "Sources"
+        case canonicalPostalCode = "CanonicalPostalCode"
+        case canonicalLocationKey = "CanonicalLocationKey"
+    }
 
-
-//
-// Hashable or Equatable:
-// The compiler will not be able to synthesize the implementation of Hashable or Equatable
-// for types that require the use of JSONAny, nor will the implementation of Hashable be
-// synthesized for types that have collections (such as arrays or dictionaries).
-
-
-
-//
-// Hashable or Equatable:
-// The compiler will not be able to synthesize the implementation of Hashable or Equatable
-// for types that require the use of JSONAny, nor will the implementation of Hashable be
-// synthesized for types that have collections (such as arrays or dictionaries).
-
-
-
-//
-// Hashable or Equatable:
-// The compiler will not be able to synthesize the implementation of Hashable or Equatable
-// for types that require the use of JSONAny, nor will the implementation of Hashable be
-// synthesized for types that have collections (such as arrays or dictionaries).
-
-
-
-//
-// Hashable or Equatable:
-// The compiler will not be able to synthesize the implementation of Hashable or Equatable
-// for types that require the use of JSONAny, nor will the implementation of Hashable be
-// synthesized for types that have collections (such as arrays or dictionaries).
-
-
-
-//
-// Hashable or Equatable:
-// The compiler will not be able to synthesize the implementation of Hashable or Equatable
-// for types that require the use of JSONAny, nor will the implementation of Hashable be
-// synthesized for types that have collections (such as arrays or dictionaries).
-
-
-
-//
-// Hashable or Equatable:
-// The compiler will not be able to synthesize the implementation of Hashable or Equatable
-// for types that require the use of JSONAny, nor will the implementation of Hashable be
-// synthesized for types that have collections (such as arrays or dictionaries).
-
-
-
+    public init(key: String, stationCode: String, stationGmtOffset: Int, bandMap: String, climo: String, localRadar: String, mediaRegion: String?, metar: String, nxMetro: String, nxState: String, population: Int?, primaryWarningCountyCode: String, primaryWarningZoneCode: String, satellite: String, synoptic: String, marineStation: String, marineStationGmtOffset: Int?, videoCode: String, locationStem: String, dma: DMA?, partnerId: String?, sources: [SourceElement], canonicalPostalCode: String, canonicalLocationKey: String) {
+        self.key = key
+        self.stationCode = stationCode
+        self.stationGmtOffset = stationGmtOffset
+        self.bandMap = bandMap
+        self.climo = climo
+        self.localRadar = localRadar
+        self.mediaRegion = mediaRegion
+        self.metar = metar
+        self.nxMetro = nxMetro
+        self.nxState = nxState
+        self.population = population
+        self.primaryWarningCountyCode = primaryWarningCountyCode
+        self.primaryWarningZoneCode = primaryWarningZoneCode
+        self.satellite = satellite
+        self.synoptic = synoptic
+        self.marineStation = marineStation
+        self.marineStationGmtOffset = marineStationGmtOffset
+        self.videoCode = videoCode
+        self.locationStem = locationStem
+        self.dma = dma
+        self.partnerId = partnerId
+        self.sources = sources
+        self.canonicalPostalCode = canonicalPostalCode
+        self.canonicalLocationKey = canonicalLocationKey
+    }
+}

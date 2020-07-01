@@ -15,7 +15,7 @@ final class AccuWeatherClientTests: XCTestCase {
         let expectation = self.expectation(description: "city-lookup")
         
         client.authenticate(with: key)
-        client.cityLookup(name: "denizli") { (result) in
+        client.cityLookup(name: "London") { (result) in
             switch result {
             case let .failure(e):
                 print(e.localizedDescription)
@@ -29,7 +29,7 @@ final class AccuWeatherClientTests: XCTestCase {
         wait(for: [expectation], timeout: 5)
         XCTAssertNotNil(city)
         XCTAssertNil(error)
-        XCTAssertEqual(city?.key, "317679")
+        XCTAssertEqual(city?.key, "328328")
     }
     
     func testCityCurrentWeather() {
@@ -243,5 +243,339 @@ final class AccuWeatherClientTests: XCTestCase {
         }
         
         return tests
+    }
+}
+
+struct TopLevel: Codable {
+    let version: Int
+    let key, type: String
+    let rank: Int
+    let localizedName, englishName, primaryPostalCode: String
+    let region, country: Country
+    let administrativeArea: AdministrativeArea
+    let timeZone: TimeZone
+    let geoPosition: GeoPosition
+    let isAlias: Bool
+    let supplementalAdminAreas: [SupplementalAdminArea]
+    let dataSets: [String]
+
+    enum CodingKeys: String, CodingKey {
+        case version = "Version"
+        case key = "Key"
+        case type = "Type"
+        case rank = "Rank"
+        case localizedName = "LocalizedName"
+        case englishName = "EnglishName"
+        case primaryPostalCode = "PrimaryPostalCode"
+        case region = "Region"
+        case country = "Country"
+        case administrativeArea = "AdministrativeArea"
+        case timeZone = "TimeZone"
+        case geoPosition = "GeoPosition"
+        case isAlias = "IsAlias"
+        case supplementalAdminAreas = "SupplementalAdminAreas"
+        case dataSets = "DataSets"
+    }
+}
+
+struct AdministrativeArea: Codable {
+    let id, localizedName, englishName: String
+    let level: Int
+    let localizedType, englishType, countryID: String
+
+    enum CodingKeys: String, CodingKey {
+        case id = "ID"
+        case localizedName = "LocalizedName"
+        case englishName = "EnglishName"
+        case level = "Level"
+        case localizedType = "LocalizedType"
+        case englishType = "EnglishType"
+        case countryID = "CountryID"
+    }
+}
+
+struct Country: Codable {
+    let id, localizedName, englishName: String
+
+    enum CodingKeys: String, CodingKey {
+        case id = "ID"
+        case localizedName = "LocalizedName"
+        case englishName = "EnglishName"
+    }
+}
+
+struct GeoPosition: Codable {
+    let latitude, longitude: Double
+    let elevation: Elevation
+
+    enum CodingKeys: String, CodingKey {
+        case latitude = "Latitude"
+        case longitude = "Longitude"
+        case elevation = "Elevation"
+    }
+}
+
+struct Elevation: Codable {
+    let metric, imperial: Imperial
+
+    enum CodingKeys: String, CodingKey {
+        case metric = "Metric"
+        case imperial = "Imperial"
+    }
+}
+
+struct Imperial: Codable {
+    let value: Int
+    let unit: String
+    let unitType: Int
+
+    enum CodingKeys: String, CodingKey {
+        case value = "Value"
+        case unit = "Unit"
+        case unitType = "UnitType"
+    }
+}
+
+struct SupplementalAdminArea: Codable {
+    let level: Int
+    let localizedName, englishName: String
+
+    enum CodingKeys: String, CodingKey {
+        case level = "Level"
+        case localizedName = "LocalizedName"
+        case englishName = "EnglishName"
+    }
+}
+
+struct TimeZone: Codable {
+    let code, name: String
+    let gmtOffset: Int
+    let isDaylightSaving: Bool
+    let nextOffsetChange: String
+
+    enum CodingKeys: String, CodingKey {
+        case code = "Code"
+        case name = "Name"
+        case gmtOffset = "GmtOffset"
+        case isDaylightSaving = "IsDaylightSaving"
+        case nextOffsetChange = "NextOffsetChange"
+    }
+}
+
+// MARK: Convenience initializers
+
+extension TopLevel {
+    init?(data: Data) {
+        guard let me = try? JSONDecoder().decode(TopLevel.self, from: data) else { return nil }
+        self = me
+    }
+
+    init?(_ json: String, using encoding: String.Encoding = .utf8) {
+        guard let data = json.data(using: encoding) else { return nil }
+        self.init(data: data)
+    }
+
+    init?(fromURL url: String) {
+        guard let url = URL(string: url) else { return nil }
+        guard let data = try? Data(contentsOf: url) else { return nil }
+        self.init(data: data)
+    }
+
+    var jsonData: Data? {
+        return try? JSONEncoder().encode(self)
+    }
+
+    var json: String? {
+        guard let data = self.jsonData else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
+}
+
+extension AdministrativeArea {
+    init?(data: Data) {
+        guard let me = try? JSONDecoder().decode(AdministrativeArea.self, from: data) else { return nil }
+        self = me
+    }
+
+    init?(_ json: String, using encoding: String.Encoding = .utf8) {
+        guard let data = json.data(using: encoding) else { return nil }
+        self.init(data: data)
+    }
+
+    init?(fromURL url: String) {
+        guard let url = URL(string: url) else { return nil }
+        guard let data = try? Data(contentsOf: url) else { return nil }
+        self.init(data: data)
+    }
+
+    var jsonData: Data? {
+        return try? JSONEncoder().encode(self)
+    }
+
+    var json: String? {
+        guard let data = self.jsonData else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
+}
+
+extension Country {
+    init?(data: Data) {
+        guard let me = try? JSONDecoder().decode(Country.self, from: data) else { return nil }
+        self = me
+    }
+
+    init?(_ json: String, using encoding: String.Encoding = .utf8) {
+        guard let data = json.data(using: encoding) else { return nil }
+        self.init(data: data)
+    }
+
+    init?(fromURL url: String) {
+        guard let url = URL(string: url) else { return nil }
+        guard let data = try? Data(contentsOf: url) else { return nil }
+        self.init(data: data)
+    }
+
+    var jsonData: Data? {
+        return try? JSONEncoder().encode(self)
+    }
+
+    var json: String? {
+        guard let data = self.jsonData else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
+}
+
+extension GeoPosition {
+    init?(data: Data) {
+        guard let me = try? JSONDecoder().decode(GeoPosition.self, from: data) else { return nil }
+        self = me
+    }
+
+    init?(_ json: String, using encoding: String.Encoding = .utf8) {
+        guard let data = json.data(using: encoding) else { return nil }
+        self.init(data: data)
+    }
+
+    init?(fromURL url: String) {
+        guard let url = URL(string: url) else { return nil }
+        guard let data = try? Data(contentsOf: url) else { return nil }
+        self.init(data: data)
+    }
+
+    var jsonData: Data? {
+        return try? JSONEncoder().encode(self)
+    }
+
+    var json: String? {
+        guard let data = self.jsonData else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
+}
+
+extension Elevation {
+    init?(data: Data) {
+        guard let me = try? JSONDecoder().decode(Elevation.self, from: data) else { return nil }
+        self = me
+    }
+
+    init?(_ json: String, using encoding: String.Encoding = .utf8) {
+        guard let data = json.data(using: encoding) else { return nil }
+        self.init(data: data)
+    }
+
+    init?(fromURL url: String) {
+        guard let url = URL(string: url) else { return nil }
+        guard let data = try? Data(contentsOf: url) else { return nil }
+        self.init(data: data)
+    }
+
+    var jsonData: Data? {
+        return try? JSONEncoder().encode(self)
+    }
+
+    var json: String? {
+        guard let data = self.jsonData else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
+}
+
+extension Imperial {
+    init?(data: Data) {
+        guard let me = try? JSONDecoder().decode(Imperial.self, from: data) else { return nil }
+        self = me
+    }
+
+    init?(_ json: String, using encoding: String.Encoding = .utf8) {
+        guard let data = json.data(using: encoding) else { return nil }
+        self.init(data: data)
+    }
+
+    init?(fromURL url: String) {
+        guard let url = URL(string: url) else { return nil }
+        guard let data = try? Data(contentsOf: url) else { return nil }
+        self.init(data: data)
+    }
+
+    var jsonData: Data? {
+        return try? JSONEncoder().encode(self)
+    }
+
+    var json: String? {
+        guard let data = self.jsonData else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
+}
+
+extension SupplementalAdminArea {
+    init?(data: Data) {
+        guard let me = try? JSONDecoder().decode(SupplementalAdminArea.self, from: data) else { return nil }
+        self = me
+    }
+
+    init?(_ json: String, using encoding: String.Encoding = .utf8) {
+        guard let data = json.data(using: encoding) else { return nil }
+        self.init(data: data)
+    }
+
+    init?(fromURL url: String) {
+        guard let url = URL(string: url) else { return nil }
+        guard let data = try? Data(contentsOf: url) else { return nil }
+        self.init(data: data)
+    }
+
+    var jsonData: Data? {
+        return try? JSONEncoder().encode(self)
+    }
+
+    var json: String? {
+        guard let data = self.jsonData else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
+}
+
+extension TimeZone {
+    init?(data: Data) {
+        guard let me = try? JSONDecoder().decode(TimeZone.self, from: data) else { return nil }
+        self = me
+    }
+
+    init?(_ json: String, using encoding: String.Encoding = .utf8) {
+        guard let data = json.data(using: encoding) else { return nil }
+        self.init(data: data)
+    }
+
+    init?(fromURL url: String) {
+        guard let url = URL(string: url) else { return nil }
+        guard let data = try? Data(contentsOf: url) else { return nil }
+        self.init(data: data)
+    }
+
+    var jsonData: Data? {
+        return try? JSONEncoder().encode(self)
+    }
+
+    var json: String? {
+        guard let data = self.jsonData else { return nil }
+        return String(data: data, encoding: .utf8)
     }
 }

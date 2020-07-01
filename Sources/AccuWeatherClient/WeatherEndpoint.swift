@@ -10,7 +10,7 @@ import Alamofire
 
 enum WeatherEndpoint: Endpoint {
     
-    case cityLookup(apiKey: String, name: String)
+    case cityLookup(apiKey: String, name: String, includeDetails: Bool = false)
     case cityCurrentWeather(apiKey: String, cityKey: String)
     case cityDailyForecast(apiKey: String, cityKey: String, frequency: DailyFrequency)
     
@@ -58,10 +58,11 @@ enum WeatherEndpoint: Endpoint {
     
     var parameters: [String:String] {
         switch self {
-        case let .cityLookup(apiKey, name):
+        case let .cityLookup(apiKey, name, includeDetails):
             return [
                 "apikey": apiKey,
-                "q": name
+                "q": name,
+                "details": includeDetails ? "true" : "false"
             ]
         case let .cityCurrentWeather(apiKey, _):
             return [

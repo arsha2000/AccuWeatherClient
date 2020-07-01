@@ -8,10 +8,8 @@
 import Foundation
 
 // MARK: - Country
-public struct Country: Codable, Hashable {
-    public let id: String
-    public let localizedName: String
-    public let englishName: String
+public struct Country: Codable {
+    public let id, localizedName, englishName: String
 
     enum CodingKeys: String, CodingKey {
         case id = "ID"
@@ -24,4 +22,4 @@ public struct Country: Codable, Hashable {
         self.localizedName = localizedName
         self.englishName = englishName
     }
-  }
+}

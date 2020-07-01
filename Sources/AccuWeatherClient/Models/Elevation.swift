@@ -8,9 +8,8 @@
 import Foundation
 
 // MARK: - Elevation
-public struct Elevation: Codable, Hashable {
-    public let metric: WeatherUnit
-    public let imperial: WeatherUnit
+public struct Elevation: Codable {
+    public let metric, imperial: WeatherUnit
 
     enum CodingKeys: String, CodingKey {
         case metric = "Metric"

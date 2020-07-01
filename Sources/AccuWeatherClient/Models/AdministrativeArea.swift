@@ -7,15 +7,12 @@
 
 import Foundation
 
+
 // MARK: - AdministrativeArea
-public struct AdministrativeArea: Codable, Hashable {
-    public let id: String
-    public let localizedName: String
-    public let englishName: String
+public struct AdministrativeArea: Codable {
+    public let id, localizedName, englishName: String
     public let level: Int?
-    public let localizedType: String
-    public let englishType: String
-    public let countryID: String
+    public let localizedType, englishType, countryId: String
 
     enum CodingKeys: String, CodingKey {
         case id = "ID"
@@ -24,16 +21,16 @@ public struct AdministrativeArea: Codable, Hashable {
         case level = "Level"
         case localizedType = "LocalizedType"
         case englishType = "EnglishType"
-        case countryID = "CountryID"
+        case countryId = "CountryID"
     }
 
-    public init(id: String, localizedName: String, englishName: String, level: Int, localizedType: String, englishType: String, countryID: String) {
+    public init(id: String, localizedName: String, englishName: String, level: Int, localizedType: String, englishType: String, countryId: String) {
         self.id = id
         self.localizedName = localizedName
         self.englishName = englishName
         self.level = level
         self.localizedType = localizedType
         self.englishType = englishType
-        self.countryID = countryID
+        self.countryId = countryId
     }
 }

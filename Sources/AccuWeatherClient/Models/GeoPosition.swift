@@ -8,9 +8,8 @@
 import Foundation
 
 // MARK: - GeoPosition
-public struct GeoPosition: Codable, Hashable {
-    public let latitude: Double
-    public let longitude: Double
+public struct GeoPosition: Codable {
+    public let latitude, longitude: Double
     public let elevation: Elevation
 
     enum CodingKeys: String, CodingKey {
