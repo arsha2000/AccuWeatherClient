@@ -33,7 +33,7 @@ public struct City: Codable {
     public let geoPosition: GeoPosition
     public let isAlias: Bool
     public let supplementalAdminAreas: [SupplementalAdminArea]
-    public let dataSets: [DataSetElement]
+    public let dataSets: [String]
     public let details: Details?
 
     enum CodingKeys: String, CodingKey {
@@ -55,7 +55,7 @@ public struct City: Codable {
         case details = "Details"
     }
 
-    public init(version: Int, key: String, type: String, rank: Int, localizedName: String, englishName: String, primaryPostalCode: String, region: Country, country: Country, administrativeArea: AdministrativeArea, timeZone: TimeZone, geoPosition: GeoPosition, isAlias: Bool, supplementalAdminAreas: [SupplementalAdminArea], dataSets: [DataSetElement], details: Details?) {
+    public init(version: Int, key: String, type: String, rank: Int, localizedName: String, englishName: String, primaryPostalCode: String, region: Country, country: Country, administrativeArea: AdministrativeArea, timeZone: TimeZone, geoPosition: GeoPosition, isAlias: Bool, supplementalAdminAreas: [SupplementalAdminArea], dataSets: [String], details: Details?) {
         self.version = version
         self.key = key
         self.type = type
@@ -78,17 +78,17 @@ public struct City: Codable {
 // MARK: - Details
 public struct Details: Codable {
     public let key, stationCode: String
-    public let stationGmtOffset: Int
+    public let stationGmtOffset: Double?
     public let bandMap, climo, localRadar: String
     public let mediaRegion: String?
     public let metar, nxMetro, nxState: String
     public let population: Int?
     public let primaryWarningCountyCode, primaryWarningZoneCode, satellite, synoptic: String
     public let marineStation: String
-    public let marineStationGmtOffset: Int?
+    public let marineStationGmtOffset: Double?
     public let videoCode, locationStem: String
     public let dma: DMA?
-    public let partnerId: String?
+    public let partnerId: Int?
     public let sources: [SourceElement]
     public let canonicalPostalCode, canonicalLocationKey: String
 
@@ -119,7 +119,7 @@ public struct Details: Codable {
         case canonicalLocationKey = "CanonicalLocationKey"
     }
 
-    public init(key: String, stationCode: String, stationGmtOffset: Int, bandMap: String, climo: String, localRadar: String, mediaRegion: String?, metar: String, nxMetro: String, nxState: String, population: Int?, primaryWarningCountyCode: String, primaryWarningZoneCode: String, satellite: String, synoptic: String, marineStation: String, marineStationGmtOffset: Int?, videoCode: String, locationStem: String, dma: DMA?, partnerId: String?, sources: [SourceElement], canonicalPostalCode: String, canonicalLocationKey: String) {
+    public init(key: String, stationCode: String, stationGmtOffset: Double, bandMap: String, climo: String, localRadar: String, mediaRegion: String?, metar: String, nxMetro: String, nxState: String, population: Int?, primaryWarningCountyCode: String, primaryWarningZoneCode: String, satellite: String, synoptic: String, marineStation: String, marineStationGmtOffset: Double?, videoCode: String, locationStem: String, dma: DMA?, partnerId: Int?, sources: [SourceElement], canonicalPostalCode: String, canonicalLocationKey: String) {
         self.key = key
         self.stationCode = stationCode
         self.stationGmtOffset = stationGmtOffset

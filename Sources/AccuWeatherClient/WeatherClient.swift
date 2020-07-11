@@ -12,13 +12,13 @@ public final class WeatherClient {
         self.apiKey = key
     }
     
-    public func cityLookup(name: String, completionHandler: @escaping (Result<[City], Error>) -> ()) {
+    public func cityLookup(name: String, withDetails: Bool ,completionHandler: @escaping (Result<[City], Error>) -> ()) {
         guard let key = apiKey else {
             completionHandler(.failure(WeatherAPIError.notAuthenticated))
             return
         }
         
-        let endpoint = WeatherEndpoint.cityLookup(apiKey: key, name: name)
+        let endpoint = WeatherEndpoint.cityLookup(apiKey: key, name: name, includeDetails: withDetails)
         request(endpoint, completionHandler: completionHandler)
     }
     
@@ -43,13 +43,13 @@ public final class WeatherClient {
         }
     }
     
-    public func cityDailyForecast(cityKey: String, frequency: DailyFrequency, completionHandler: @escaping (Result<DailyForecastResponse, Error>) -> ()) {
+    public func cityDailyForecast(cityKey: String ,frequency: DailyFrequency, completionHandler: @escaping (Result<DailyForecastResponse, Error>) -> ()) {
         guard let key = apiKey else {
             completionHandler(.failure(WeatherAPIError.notAuthenticated))
             return
         }
         
-        let endpoint = WeatherEndpoint.cityDailyForecast(apiKey: key, cityKey: cityKey, frequency: frequency)
+        let endpoint = WeatherEndpoint.cityDailyForecast(apiKey: key, cityKey: cityKey, frequency: frequency, metric: Locale.current.usesMetricSystem)
         request(endpoint, completionHandler: completionHandler)
     }
     
@@ -75,13 +75,13 @@ public final class WeatherClient {
 
 @available(iOS 13, *)
 extension WeatherClient {
-    public func cityLookup(name: String) -> AnyPublisher<[City], Error> {
+    public func cityLookup(name: String, withDetails: Bool) -> AnyPublisher<[City], Error> {
         guard let key = apiKey else {
             return Fail(error: WeatherAPIError.notAuthenticated)
                 .eraseToAnyPublisher()
         }
         
-        let endpoint = WeatherEndpoint.cityLookup(apiKey: key, name: name)
+        let endpoint = WeatherEndpoint.cityLookup(apiKey: key, name: name, includeDetails: withDetails)
         return request(endpoint, type: [City].self)
             .value()
             .mapError { $0 as Error }
@@ -118,7 +118,7 @@ extension WeatherClient {
                 .eraseToAnyPublisher()
         }
         
-        let endpoint = WeatherEndpoint.cityDailyForecast(apiKey: key, cityKey: cityKey, frequency: frequency)
+        let endpoint = WeatherEndpoint.cityDailyForecast(apiKey: key, cityKey: cityKey, frequency: frequency, metric: Locale.current.usesMetricSystem)
         return request(endpoint, type: DailyForecastResponse.self)
             .value()
             .mapError { $0 as Error }
