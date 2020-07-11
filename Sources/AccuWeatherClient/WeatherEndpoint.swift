@@ -12,7 +12,7 @@ enum WeatherEndpoint: Endpoint {
     
     case cityLookup(apiKey: String, name: String, includeDetails: Bool = false)
     case cityCurrentWeather(apiKey: String, cityKey: String)
-    case cityDailyForecast(apiKey: String, cityKey: String, frequency: DailyFrequency)
+    case cityDailyForecast(apiKey: String, cityKey: String, frequency: DailyFrequency, metric: Bool = false)
     
     private var baseURL: URL {
         guard let url = URL(string: "http://dataservice.accuweather.com") else {
@@ -29,7 +29,7 @@ enum WeatherEndpoint: Endpoint {
             return baseURL.appendingPathComponent("locations/v1/cities/search")
         case let .cityCurrentWeather(_, cityKey):
             return baseURL.appendingPathComponent("currentconditions/v1/\(cityKey)")
-        case let .cityDailyForecast(_, cityKey, frequency):
+        case let .cityDailyForecast(_, cityKey, frequency, _):
             var url = baseURL.appendingPathComponent("forecasts/v1/daily")
             switch frequency {
             case .oneDay: url.appendPathComponent("1day")
@@ -68,9 +68,10 @@ enum WeatherEndpoint: Endpoint {
             return [
                 "apikey": apiKey
             ]
-        case let .cityDailyForecast(apiKey, _, _):
+        case let .cityDailyForecast(apiKey, _, _, metric):
             return [
-                "apikey": apiKey
+                "apikey": apiKey,
+                "metric": metric ? "true" : "false"
             ]
         }
     }
