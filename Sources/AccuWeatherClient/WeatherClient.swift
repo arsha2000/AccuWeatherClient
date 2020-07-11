@@ -43,13 +43,13 @@ public final class WeatherClient {
         }
     }
     
-    public func cityDailyForecast(cityKey: String ,frequency: DailyFrequency, completionHandler: @escaping (Result<DailyForecastResponse, Error>) -> ()) {
+    public func cityDailyForecast(cityKey: String ,frequency: DailyFrequency, useMetric: Bool = Locale.current.usesMetricSystem, completionHandler: @escaping (Result<DailyForecastResponse, Error>) -> ()) {
         guard let key = apiKey else {
             completionHandler(.failure(WeatherAPIError.notAuthenticated))
             return
         }
         
-        let endpoint = WeatherEndpoint.cityDailyForecast(apiKey: key, cityKey: cityKey, frequency: frequency, metric: Locale.current.usesMetricSystem)
+        let endpoint = WeatherEndpoint.cityDailyForecast(apiKey: key, cityKey: cityKey, frequency: frequency, metric: useMetric)
         request(endpoint, completionHandler: completionHandler)
     }
     
@@ -112,13 +112,13 @@ extension WeatherClient {
             .eraseToAnyPublisher()
     }
     
-    public func cityDailyForecast(cityKey: String, frequency: DailyFrequency) -> AnyPublisher<DailyForecastResponse, Error> {
+    public func cityDailyForecast(cityKey: String, frequency: DailyFrequency, useMetric: Bool = Locale.current.usesMetricSystem) -> AnyPublisher<DailyForecastResponse, Error> {
         guard let key = apiKey else {
             return Fail(error: WeatherAPIError.notAuthenticated)
                 .eraseToAnyPublisher()
         }
         
-        let endpoint = WeatherEndpoint.cityDailyForecast(apiKey: key, cityKey: cityKey, frequency: frequency, metric: Locale.current.usesMetricSystem)
+        let endpoint = WeatherEndpoint.cityDailyForecast(apiKey: key, cityKey: cityKey, frequency: frequency, metric: useMetric)
         return request(endpoint, type: DailyForecastResponse.self)
             .value()
             .mapError { $0 as Error }
