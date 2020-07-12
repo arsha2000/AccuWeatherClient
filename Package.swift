@@ -29,6 +29,5 @@ let package = Package(
             name: "AccuWeatherClientTests",
             dependencies: ["AccuWeatherClient"]),
     ],
-    swiftLanguageVersions: [.v5],
-    exclude: ["Test App"]
+    swiftLanguageVersions: [.v5]
 )
