@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "AccuWeatherClient",
+        "repositoryURL": "https://github.com/arsha2000/AccuWeatherClient.git",
+        "state": {
+          "branch": "main",
+          "revision": "b064823da32171260d438367407d3b3abd319d25",
+          "version": null
+        }
+      },
+      {
+        "package": "Alamofire",
+        "repositoryURL": "https://github.com/Alamofire/Alamofire.git",
+        "state": {
+          "branch": null,
+          "revision": "2777659076fda38bd4e487739ee331c7a65b5924",
+          "version": "5.2.1"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
